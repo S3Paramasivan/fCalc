@@ -23,6 +23,8 @@ final class Tester: XCTestCase {
             "1/2 * 3&3/4": "1&7/8",
             "2&3/8 + 9/8": "3&1/2",
             "1&3/4 - 2": "-1/4",
+            "1&3/4 + -2&3/4": "-1",
+            "-1&3/4 + -2&3/4": "-4&1/2",
         ].forEach { testCase in
             XCTAssertEqual(testCase.key.evaluate(), testCase.value)
         }

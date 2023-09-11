@@ -30,7 +30,10 @@ extension String {
                 if wholeAndNumeratorWithDenominator.count == 2 {
                     let numeratorAndDenominatorNumber = wholeAndNumeratorWithDenominator[1]
                     if let decimalFromFraction = numeratorAndDenominatorNumber.decimalFromFraction {
-                        return String(wholeNumber.double + decimalFromFraction)
+                        let wholeNumberDouble = wholeNumber.double
+                        let absoluteWholeNumber = abs(wholeNumberDouble)
+                        let multplier: Double = (wholeNumberDouble.sign == .minus ? -1 : 1)
+                        return String(multplier * (absoluteWholeNumber + decimalFromFraction))
                     }
                 }
             }
@@ -66,7 +69,7 @@ extension String {
             else if operands.count == operators.count {
                 operands.enumerated().forEach { (index, operand) in
                     if let number = operand.number {
-                        let expressionFormat = String(format: "%f%@%@", result, operators[index], number)
+                        let expressionFormat = String(format: "(%f)%@(%@)", result, operators[index], number)
                         let arithmeticExpression = NSExpression(format: expressionFormat)
                         if let expressionValue = arithmeticExpression.expressionValue(with: nil, context: nil) as? NSNumber {
                             result = expressionValue.doubleValue
@@ -97,7 +100,8 @@ extension String {
                 }
                 if decimalNumber != 0 {
                     resultString += resultString.isEmpty ? "" : "&"
-                    resultString += decimalNumber.fraction
+                    let absoluteDecimalNumber = wholeNumber != 0 ? abs(decimalNumber) : decimalNumber
+                    resultString += absoluteDecimalNumber.fraction
                 }
                 let output = self + " = " + resultString
                 let outputLines = [String](repeating: "-", count: output.count).joined()
@@ -113,7 +117,7 @@ extension String {
             }
         }
         else {
-            print("Use two operands and one operator at least with operators and operands separated by space for the result to generate!")
+            print("Use two operands and one operator at least with operators and operands separated by space for the result to generate!\n\nFor Example: 1&3/4 - 2")
         }
         print("\n")
         return nil
