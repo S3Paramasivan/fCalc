@@ -8,7 +8,9 @@
 import Foundation
 
 extension String {
-    static let supportingOperators = ["+", "-", "*", "/"]
+    static let division = "/"
+    static let supportingOperators = ["+", "-", "*", String.division]
+    var isDivision: Bool {self == String.division}
 
     var double: Double {Double(self) ?? 0}
     
@@ -69,12 +71,18 @@ extension String {
             else if operands.count == operators.count {
                 operands.enumerated().forEach { (index, operand) in
                     if let number = operand.number {
-                        let expressionFormat = String(format: "(%f)%@(%@)", result, operators[index], number)
-                        let arithmeticExpression = NSExpression(format: expressionFormat)
-                        if let expressionValue = arithmeticExpression.expressionValue(with: nil, context: nil) as? NSNumber {
-                            result = expressionValue.doubleValue
-                        } else {
-                            print("Experiecing some problem in arithmetic operation!")
+                        let `operator` = operators[index]
+                        if `operator`.isDivision, let doubleNumber = Double(number), doubleNumber == 0 {
+                            print("Division by zero is not allowed, hence excluding it from calculation!")
+                        }
+                        else {
+                            let expressionFormat = String(format: "(%f)%@(%@)", result, `operator`, number)
+                            let arithmeticExpression = NSExpression(format: expressionFormat)
+                            if let expressionValue = arithmeticExpression.expressionValue(with: nil, context: nil) as? NSNumber {
+                                result = expressionValue.doubleValue
+                            } else {
+                                print("Experiecing some problem in arithmetic operation!")
+                            }
                         }
                     }
                     else {
